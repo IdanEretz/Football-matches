@@ -1,0 +1,39 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Teddy Stadium Football//EN
+CALSCALE:GREGORIAN
+X-WR-CALNAME:Teddy Stadium Matches
+X-WR-TIMEZONE:Asia/Jerusalem
+BEGIN:VEVENT
+SUMMARY:⚽ בית"ר ירושלים vs מכבי תל אביב
+DTSTART;TZID=Asia/Jerusalem:20260216T203000
+DTEND;TZID=Asia/Jerusalem:20260216T230000
+DTSTAMP:20260208T222529Z
+UID:teddy-20260216-a94f5b@football-matches
+LOCATION:Teddy Stadium\, Jerusalem
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:⚽ הפועל ירושלים vs הפועל ק"ש
+DTSTART;TZID=Asia/Jerusalem:20260221T183000
+DTEND;TZID=Asia/Jerusalem:20260221T210000
+DTSTAMP:20260208T222529Z
+UID:teddy-20260221-fad774@football-matches
+LOCATION:Teddy Stadium\, Jerusalem
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:⚽ בית"ר ירושלים vs עירוני טבריה
+DTSTART;TZID=Asia/Jerusalem:20260301T203000
+DTEND;TZID=Asia/Jerusalem:20260301T230000
+DTSTAMP:20260208T222529Z
+UID:teddy-20260301-977f3c@football-matches
+LOCATION:Teddy Stadium\, Jerusalem
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:⚽ הפועל ירושלים vs בית"ר ירושלים
+DTSTART;TZID=Asia/Jerusalem:20260307T203000
+DTEND;TZID=Asia/Jerusalem:20260307T230000
+DTSTAMP:20260208T222529Z
+UID:teddy-20260307-fc71ae@football-matches
+LOCATION:Teddy Stadium\, Jerusalem
+END:VEVENT
+END:VCALENDAR
