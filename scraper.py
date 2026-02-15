@@ -8,10 +8,11 @@ Data sources:
 Only future home matches at Teddy Stadium are included.
 """
 
+import hashlib
 import re
 import sys
 import requests
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from icalendar import Calendar, Event
 from pathlib import Path
@@ -240,18 +241,23 @@ def create_ics(matches: list[dict]) -> Calendar:
     cal.add("x-wr-calname", "Teddy Stadium Matches")
     cal.add("x-wr-timezone", "Asia/Jerusalem")
 
+    now_utc = datetime.now(tz=timezone.utc)
+
     for match in matches:
         event = Event()
         summary = f"⚽ {match['home_team']} vs {match['away_team']}"
         event.add("summary", summary)
-        event.add("dtstart", match["datetime"])
-        event.add("dtend", match["datetime"] + MATCH_DURATION)
+        # Use UTC times for maximum compatibility
+        dt_utc = match["datetime"].astimezone(timezone.utc)
+        event.add("dtstart", dt_utc)
+        event.add("dtend", dt_utc + MATCH_DURATION)
         event.add("location", "Teddy Stadium, Jerusalem")
-        event.add(
-            "uid",
-            f"teddy-{match['datetime'].strftime('%Y%m%d')}-{hash(summary) & 0xFFFFFF:06x}@football-matches",
-        )
-        event.add("dtstamp", datetime.now(tz=ISRAEL_TZ))
+        # Stable UID based on date — doesn't change between runs
+        uid_hash = hashlib.md5(
+            f"{match['datetime'].strftime('%Y%m%d')}-{match['home_team']}-{match['away_team']}".encode()
+        ).hexdigest()[:8]
+        event.add("uid", f"teddy-{match['datetime'].strftime('%Y%m%d')}-{uid_hash}@football-matches")
+        event.add("dtstamp", now_utc)
         cal.add_component(event)
 
     return cal
