@@ -48,6 +48,10 @@ def fetch_beitar_matches() -> list[dict]:
     matches = []
     now = datetime.now(tz=ISRAEL_TZ)
 
+    # Debug: count total game items found
+    total_items = len(soup.find_all(class_="game_list_item"))
+    print(f"    DEBUG: Found {total_items} game_list_item elements on Beitar site")
+
     for item in soup.find_all(class_="game_list_item"):
         teams_div = item.find(class_="teams_names")
         if not teams_div:
