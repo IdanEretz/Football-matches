@@ -37,20 +37,43 @@ HEADERS = {
 
 
 def fetch_beitar_matches() -> list[dict]:
-    """Scrape upcoming home matches from Beitar Jerusalem's official site."""
+    """Scrape upcoming home matches from Beitar Jerusalem's official site using Selenium."""
     from bs4 import BeautifulSoup
+    from selenium import webdriver
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
 
     url = "https://www.beitarfc.co.il/%D7%9E%D7%A9%D7%97%D7%A7%D7%99%D7%9D/"
-    resp = requests.get(url, headers=HEADERS, timeout=30)
-    resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, "html.parser")
+
+    # Set up headless Chrome
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument(f"user-agent={HEADERS['User-Agent']}")
+
+    driver = None
+    try:
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.get(url)
+
+        # Wait for game items to load
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "game_list_item"))
+        )
+
+        # Get the page source after JavaScript has rendered
+        html = driver.page_source
+        soup = BeautifulSoup(html, "html.parser")
+
+    finally:
+        if driver:
+            driver.quit()
 
     matches = []
     now = datetime.now(tz=ISRAEL_TZ)
-
-    # Debug: count total game items found
-    total_items = len(soup.find_all(class_="game_list_item"))
-    print(f"    DEBUG: Found {total_items} game_list_item elements on Beitar site")
 
     for item in soup.find_all(class_="game_list_item"):
         teams_div = item.find(class_="teams_names")
